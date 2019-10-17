@@ -16,7 +16,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var flagBlock:SKSpriteNode! = nil
     var winBlock:SKSpriteNode! = nil
     var flag:SKSpriteNode! = nil
-    let playerSpeed:CGFloat =  40
+    var wall:SKSpriteNode! = nil
+    var isBlock:SKSpriteNode! = nil
+    let playerSpeed:CGFloat =  20
     
     var spriteArray:[SKSpriteNode] = []
 
@@ -28,6 +30,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.flagBlock = self.scene?.childNode(withName: "flagblock") as! SKSpriteNode
         self.winBlock = self.scene?.childNode(withName: "winblock") as! SKSpriteNode
         self.flag = self.scene?.childNode(withName: "flag") as! SKSpriteNode
+         self.wall = self.scene?.childNode(withName: "wall") as! SKSpriteNode
+         self.isBlock = self.scene?.childNode(withName: "isblock") as! SKSpriteNode
     
         self.player.physicsBody = SKPhysicsBody(rectangleOf: player.size)
         self.player.physicsBody?.isDynamic = true
@@ -48,9 +52,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             isBlock.physicsBody = SKPhysicsBody(rectangleOf: isBlock.size)
             isBlock.physicsBody?.affectedByGravity = false
             isBlock.physicsBody?.allowsRotation = false
-            isBlock.physicsBody?.isDynamic = true
+            isBlock.physicsBody?.isDynamic = false
             isBlock.physicsBody?.categoryBitMask = 4
             self.spriteArray.append(isBlock)
+        }
+        
+        self.enumerateChildNodes(withName: "wall") {
+            (node, stop) in
+            let wall = node as! SKSpriteNode
+            wall.physicsBody = SKPhysicsBody(rectangleOf: wall.size)
+            wall.physicsBody?.affectedByGravity = false
+            wall.physicsBody?.allowsRotation = false
+            wall.physicsBody?.isDynamic = false
+            wall.physicsBody?.categoryBitMask = 16
+            self.spriteArray.append(wall)
         }
         
         self.wallBlock.physicsBody = SKPhysicsBody(rectangleOf: wallBlock.size)
@@ -74,13 +89,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.flagBlock.physicsBody?.allowsRotation = false
         self.flagBlock.physicsBody?.categoryBitMask = 64
         
-        self.flag.physicsBody = SKPhysicsBody(rectangleOf: flag.size)
+        //self.flag.physicsBody = SKPhysicsBody(rectangleOf: flag.size)
         self.flag.physicsBody?.isDynamic = false
         self.flag.physicsBody?.affectedByGravity = false
         self.flag.physicsBody?.allowsRotation = false
         self.flag.physicsBody?.categoryBitMask = 128
         self.flag.physicsBody?.contactTestBitMask = 239
         self.spriteArray.append(flag)
+        
 
     }
    
@@ -93,18 +109,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             return
         }
-        
-        if (nodeX!.name == "flag" && nodeY!.name == "winBlock") {
+        if (nodeX!.name != "isblock" && nodeY!.name != "wallblock") {
             // output game win
-            print("1GAME WIN! => Reaching Next level")
-           
-        }
-        if (nodeX!.name == "winBlock" && nodeY!.name == "flag") {
-            // output game win
-            print("action")
+            print("wall deactivated")
+            self.enumerateChildNodes(withName: "wall") {
+                                (node, stop) in
+                                let wall = node as! SKSpriteNode
+                                //wall.physicsBody = SKPhysicsBody(rectangleOf: wall.size)
+                                wall.physicsBody?.affectedByGravity = false
+                                wall.physicsBody?.allowsRotation = false
+                                wall.physicsBody?.isDynamic = false
+                                wall.physicsBody?.categoryBitMask = 0
+                                self.spriteArray.append(wall)
+                            }
             
         }
-        
+        if (nodeX!.name != "isblock" && nodeY!.name != "stopblock") {
+            // output game win
+            print("wall deactivated")
+            self.enumerateChildNodes(withName: "wall") {
+                (node, stop) in
+                let wall = node as! SKSpriteNode
+                wall.physicsBody = SKPhysicsBody(rectangleOf: wall.size)
+                wall.physicsBody?.affectedByGravity = false
+                wall.physicsBody?.allowsRotation = false
+                wall.physicsBody?.isDynamic = false
+                wall.physicsBody?.categoryBitMask = 0
+                self.spriteArray.append(wall)
+            }
+            
+        }
         
     }
     
