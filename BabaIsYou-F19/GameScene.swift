@@ -17,6 +17,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var winBlock:SKSpriteNode! = nil
     var flag:SKSpriteNode! = nil
     let playerSpeed:CGFloat =  40
+    
+    var spriteArray:[SKSpriteNode] = []
 
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
@@ -26,7 +28,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.flagBlock = self.scene?.childNode(withName: "flagblock") as! SKSpriteNode
         self.winBlock = self.scene?.childNode(withName: "winblock") as! SKSpriteNode
         self.flag = self.scene?.childNode(withName: "flag") as! SKSpriteNode
-        
+    
         self.player.physicsBody = SKPhysicsBody(rectangleOf: player.size)
         self.player.physicsBody?.isDynamic = true
         self.player.physicsBody?.affectedByGravity = false
@@ -48,6 +50,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             isBlock.physicsBody?.allowsRotation = false
             isBlock.physicsBody?.isDynamic = true
             isBlock.physicsBody?.categoryBitMask = 4
+            self.spriteArray.append(isBlock)
         }
         
         self.wallBlock.physicsBody = SKPhysicsBody(rectangleOf: wallBlock.size)
@@ -61,6 +64,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.winBlock.physicsBody?.affectedByGravity = false
         self.winBlock.physicsBody?.allowsRotation = false
         self.winBlock.physicsBody?.categoryBitMask = 32
+        self.spriteArray.append(winBlock)
         
         self.flagBlock.physicsBody = SKPhysicsBody(rectangleOf: flagBlock.size)
         self.flagBlock.physicsBody?.isDynamic = true
@@ -69,10 +73,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.flagBlock.physicsBody?.categoryBitMask = 64
         
         self.flag.physicsBody = SKPhysicsBody(rectangleOf: flag.size)
-        self.flag.physicsBody?.isDynamic = true
+        self.flag.physicsBody?.isDynamic = false
         self.flag.physicsBody?.affectedByGravity = false
         self.flag.physicsBody?.allowsRotation = false
         self.flag.physicsBody?.categoryBitMask = 128
+        self.spriteArray.append(flag)
 
     }
    
@@ -83,6 +88,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        
+        let arr:Array = self.spriteArray
+        print("arrayItems: \(arr)")
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
