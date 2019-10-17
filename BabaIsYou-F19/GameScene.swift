@@ -58,12 +58,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.wallBlock.physicsBody?.affectedByGravity = false
         self.wallBlock.physicsBody?.allowsRotation = false
         self.wallBlock.physicsBody?.categoryBitMask = 8
+        self.wallBlock.physicsBody?.contactTestBitMask = 239
         
         self.winBlock.physicsBody = SKPhysicsBody(rectangleOf: winBlock.size)
         self.winBlock.physicsBody?.isDynamic = true
         self.winBlock.physicsBody?.affectedByGravity = false
         self.winBlock.physicsBody?.allowsRotation = false
         self.winBlock.physicsBody?.categoryBitMask = 32
+         self.winBlock.physicsBody?.contactTestBitMask = 239
         self.spriteArray.append(winBlock)
         
         self.flagBlock.physicsBody = SKPhysicsBody(rectangleOf: flagBlock.size)
@@ -77,20 +79,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.flag.physicsBody?.affectedByGravity = false
         self.flag.physicsBody?.allowsRotation = false
         self.flag.physicsBody?.categoryBitMask = 128
+        self.flag.physicsBody?.contactTestBitMask = 239
         self.spriteArray.append(flag)
 
     }
    
     func didBegin(_ contact: SKPhysicsContact) {
-        print("Something collided!")
+       // print("Something collided!")
+        
+        let nodeX = contact.bodyA.node
+        let nodeY = contact.bodyB.node
+        if(nodeX == nil || nodeY == nil)
+        {
+            return
+        }
+        
+        if (nodeX!.name == "flag" && nodeY!.name == "winBlock") {
+            // output game win
+            print("1GAME WIN! => Reaching Next level")
+           
+        }
+        if (nodeX!.name == "winBlock" && nodeY!.name == "flag") {
+            // output game win
+            print("action")
+            
+        }
+        
         
     }
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         
-        let arr:Array = self.spriteArray
-        print("arrayItems: \(arr)")
+//        let arr:Array = self.spriteArray
+//        print("arrayItems: \(arr)")
+//        let indexA = self.spriteArray.index(after: -1)
+//        print(indexA)
+        
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
