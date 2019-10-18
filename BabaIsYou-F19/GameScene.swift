@@ -10,41 +10,48 @@ import SpriteKit
 import GameplayKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    var player:SKSpriteNode! = nil
-    var stopblock:SKSpriteNode! = nil
-    var wallBlock:SKSpriteNode! = nil
-    var flagBlock:SKSpriteNode! = nil
-    var winBlock:SKSpriteNode! = nil
-    var flag:SKSpriteNode! = nil
-    var wall:SKSpriteNode! = nil
-    var isBlock:SKSpriteNode! = nil
+    var player:SKSpriteNode!
+    var stopblock:SKSpriteNode!
+    var wallBlock:SKSpriteNode!
+    var flagBlock:SKSpriteNode!
+    var winBlock:SKSpriteNode!
+    var flag:SKSpriteNode!
+    var wall:SKSpriteNode!
+    var isBlock:SKSpriteNode!
     let playerSpeed:CGFloat =  20
+    var ConditionOne = false
+    var ConditionTwo = false
+    var ConditionThree = false
+    var ConditionFour = false
     
     var spriteArray:[SKSpriteNode] = []
 
     override func didMove(to view: SKView) {
         self.physicsWorld.contactDelegate = self
-        self.stopblock = self.scene?.childNode(withName: "stopblock") as! SKSpriteNode
-        self.player = self.scene?.childNode(withName: "player") as! SKSpriteNode
-        self.wallBlock = self.scene?.childNode(withName: "wallblock") as! SKSpriteNode
-        self.flagBlock = self.scene?.childNode(withName: "flagblock") as! SKSpriteNode
-        self.winBlock = self.scene?.childNode(withName: "winblock") as! SKSpriteNode
-        self.flag = self.scene?.childNode(withName: "flag") as! SKSpriteNode
-         self.wall = self.scene?.childNode(withName: "wall") as! SKSpriteNode
-         self.isBlock = self.scene?.childNode(withName: "isblock") as! SKSpriteNode
+        self.stopblock = self.scene?.childNode(withName: "stopblock") as? SKSpriteNode
+        self.player = self.scene?.childNode(withName: "player") as? SKSpriteNode
+        self.wallBlock = self.scene?.childNode(withName: "wallblock") as? SKSpriteNode
+        self.flagBlock = self.scene?.childNode(withName: "flagblock") as? SKSpriteNode
+        self.winBlock = self.scene?.childNode(withName: "winblock") as? SKSpriteNode
+        self.flag = self.scene?.childNode(withName: "flag") as? SKSpriteNode
+         self.wall = self.scene?.childNode(withName: "wall") as? SKSpriteNode
+         self.isBlock = self.scene?.childNode(withName: "isblock") as? SKSpriteNode
     
         self.player.physicsBody = SKPhysicsBody(rectangleOf: player.size)
         self.player.physicsBody?.isDynamic = true
         self.player.physicsBody?.affectedByGravity = false
         self.player.physicsBody?.allowsRotation = false
          self.player.physicsBody?.categoryBitMask = 1
+        self.player.physicsBody?.contactTestBitMask = 0
         
         
         self.stopblock.physicsBody?.isDynamic = true
         self.stopblock.physicsBody = SKPhysicsBody(rectangleOf: stopblock.size)
        self.stopblock.physicsBody?.affectedByGravity = false
         self.stopblock.physicsBody?.allowsRotation = false
-        self.player.physicsBody?.categoryBitMask = 2
+        self.stopblock.physicsBody?.categoryBitMask = 2
+        self.stopblock.physicsBody?.contactTestBitMask = 23
+        
         
         self.enumerateChildNodes(withName: "isblock") {
             (node, stop) in
@@ -73,14 +80,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.wallBlock.physicsBody?.affectedByGravity = false
         self.wallBlock.physicsBody?.allowsRotation = false
         self.wallBlock.physicsBody?.categoryBitMask = 8
-        self.wallBlock.physicsBody?.contactTestBitMask = 239
+        self.wallBlock.physicsBody?.contactTestBitMask = 23
         
         self.winBlock.physicsBody = SKPhysicsBody(rectangleOf: winBlock.size)
         self.winBlock.physicsBody?.isDynamic = true
         self.winBlock.physicsBody?.affectedByGravity = false
         self.winBlock.physicsBody?.allowsRotation = false
         self.winBlock.physicsBody?.categoryBitMask = 32
-         self.winBlock.physicsBody?.contactTestBitMask = 239
+         self.winBlock.physicsBody?.contactTestBitMask = 4
         self.spriteArray.append(winBlock)
         
         self.flagBlock.physicsBody = SKPhysicsBody(rectangleOf: flagBlock.size)
@@ -88,13 +95,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.flagBlock.physicsBody?.affectedByGravity = false
         self.flagBlock.physicsBody?.allowsRotation = false
         self.flagBlock.physicsBody?.categoryBitMask = 64
+         self.flagBlock.physicsBody?.contactTestBitMask = 4
         
-        //self.flag.physicsBody = SKPhysicsBody(rectangleOf: flag.size)
+        self.flag.physicsBody = SKPhysicsBody(rectangleOf: flag.size)
         self.flag.physicsBody?.isDynamic = false
         self.flag.physicsBody?.affectedByGravity = false
         self.flag.physicsBody?.allowsRotation = false
         self.flag.physicsBody?.categoryBitMask = 128
-        self.flag.physicsBody?.contactTestBitMask = 239
+        self.flag.physicsBody?.contactTestBitMask = 1
         self.spriteArray.append(flag)
         
 
@@ -109,6 +117,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         {
             return
         }
+        
         if (nodeX!.name != "isblock" && nodeY!.name != "wallblock") {
             // output game win
             print("wall deactivated")
@@ -140,7 +149,45 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         }
         
+        if (nodeX!.name == "isblock" && nodeY!.name == "flagblock") {
+            // output game win
+            print("win")
+            
+            self.ConditionOne = true
+
+        }
+        if (nodeX!.name == "isblock" && nodeY!.name == "winblock") {
+            // output game win
+            print("win2")
+            
+            self.ConditionTwo = true
+
+        }
+        if (nodeX!.name == "flag" && nodeY!.name == "player") {
+            // output game win
+            print("flag Touched ")
+            
+            self.ConditionFour = true
+            
+        }
+
+        if(self.ConditionOne == true && self.ConditionTwo == true)
+        {
+            print("Rules Active => now Touch the Flag!")
+            self.ConditionThree = true
+            
+        }
+        if(self.ConditionThree == true && self.ConditionFour == true)
+        {
+            print("game win sem final done!")
+        }
+        
+        
+
+        
+        
     }
+    
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
